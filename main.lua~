@@ -1,0 +1,68 @@
+function love.load()
+	testbead = love.graphics.newImage("gfx/bead1.png") --load test gfx
+	testmusic = love.audio.newSource("bgm/pianotaters.mp3") --load test bgm
+    	time = 0  --basic time for controlling shrinking and stopping of ball as long as theres no input
+	time2= 0
+	dime = 1
+
+	distance = 0
+	stopped = 0
+	speedfactor = 1
+	speedfactor2 = 0
+
+	pallot = {}
+	pallot.img = {}
+	pallot.x = {}
+	pallot.y = {}
+	pallot.koko = {}
+
+	pallot.img[1] = love.graphics.newImage("gfx/bead1.png")
+	pallox={}
+	for i=2,10 do
+		pallox[i]=4597
+	end
+	pallox[1]=0
+	
+end
+
+function love.update(dt)
+	time = time + 2*dt
+	time2=time2+dt
+	dime = (2^time)^ 2
+	if time > 4 then --stop the movement and start growing the ball
+		stopped = 1
+	end
+	if time > 8 then --start movement again (NOTE this should be a keypress)
+		time=0
+		speedfactor = speedfactor + 1
+		speedfactor2 = speedfactor
+		stopped = 0
+	end
+	if time2>1 and stopped == 0 then --move the balls backwards
+		for i=1,9 do
+			pallox[11-i]=pallox[10-i]
+		end
+		pallox[1]=450+distance
+		time2=0
+	end
+	if stopped == 0 then	--grow the distance when the line is not stopped (aka we are moving forward)
+		distance = distance + speedfactor
+	end
+	testmusic:play()
+
+end
+
+function love.mousepressed(x, y, button)
+	if button == "l"
+		stopped = 0
+	end
+end
+
+function love.draw()
+	love.graphics.print(dime, 400, 300)
+	--love.graphics.draw(pallot.img[1], 0.2*400-0.2*100*dime, 0.2*300-0.2*100*dime, 0, 0.2*dime)
+	for i=1,10 do
+	love.graphics.draw(testbead, 400-distance+pallox[i], 300,0,0.2)
+	end
+	love.graphics.line(400-distance, 300, 400, 300)
+end
